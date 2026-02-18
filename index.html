@@ -1,72 +1,109 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
-    <style>
-        /* Reset padrão para não sobrar espaços */
-        body { 
-            margin: 0; 
-            padding: 0; 
-            overflow: hidden; 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background: transparent; 
-        }
-        
-        /* Container da Logo - Posicionamento Superior Central */
-        .logo-container {
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SAMP HUD Ultra Clean</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 100vw;
+    height: 100vh;
+    background: transparent;
+    font-family: 'Rajdhani', sans-serif;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end; 
+    justify-content: flex-end; 
+    padding-bottom: 1.2vh; 
+    padding-right: 1vw;
+  }
+
+          .logo-container {
             position: absolute;
-            top: -25px; /* Valor menor para ficar bem no topo */
+            top: 5px; /* Valor menor para ficar bem no topo */
             left: 50%;
             transform: translateX(-50%);
             text-align: center;
         }
 
         .logo-container img {
-            width: 200px; /* Ajuste o tamanho da logo aqui */
+            width: 220px; /* Ajuste o tamanho da logo aqui */
             /* Sombra removida conforme solicitado */
             filter: none; 
         }
-
-        /* HUD de Necessidades (Canto Inferior Direito) */
-        .hud-container {
-            position: absolute;
-            bottom: 30px;
-            right: 30px;
-            width: 180px;
-            background: rgba(0, 0, 0, 0.5); /* Fundo semi-transparente */
-            padding: 12px;
-            border-radius: 8px;
-            border-left: 0px solid #ffffff; /* Detalhe lateral branco */
-        }
-
-        .stat-row { margin-bottom: 8px; }
-        .stat-row:last-child { margin-bottom: 0; }
         
-        .stat-label { 
-            color: white; 
-            font-size: 10px; 
-            margin-bottom: 4px; 
-            text-transform: uppercase; 
-            letter-spacing: 1px;
-        }
+  .hud-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+  }
 
-        .bar-bg { 
-            width: 100%; 
-            height: 6px; 
-            background: rgba(255, 255, 255, 0.1); 
-            border-radius: 3px; 
-        }
+  .hud {
+    display: flex;
+    gap: 6px; 
+    align-items: center;
+    animation: slideInRight 0.6s ease-out both;
+  }
 
-        .bar-fill { 
-            height: 100%; 
-            border-radius: 3px;
-            transition: width 0.4s ease-in-out; 
-        }
-        
-        /* Cores das Barras */
-        .fome { background: #E67E22; } /* Laranja */
-        .sede { background: #3498DB; } /* Azul */
-        .sono { background: #9B59B6; } /* Roxo */
-    </style>
+  @keyframes slideInRight {
+    from { opacity: 0; transform: translateX(20px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  .hud-btn {
+    width: 4.8vmin;
+    height: 4.8vmin;
+    min-width: 34px;
+    min-height: 34px;
+    max-width: 42px;
+    max-height: 42px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    transition: all 0.3s ease;
+  }
+
+  .hud-btn svg {
+    width: 50%;
+    height: 50%;
+    fill: white;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));
+  }
+
+  /* Cores Modernas e Sólidas */
+  .btn-armor   { background: #3b3b4a; border-bottom: 2px solid #5c5c7a; }
+  .btn-health  { background: #c22749; border-bottom: 2px solid #ff4d73; }
+  .btn-hunger  { background: #d65d15; border-bottom: 2px solid #ff8c42; }
+  .btn-water   { background: #1470b5; border-bottom: 2px solid #4da3ff; }
+  .btn-mic     { background: #1e8c30; border-bottom: 2px solid #45e062; }
+
+  .version {
+    color: rgba(255,255,255,0.15);
+    font-size: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-right: 2px;
+  }
+
+  /* Efeito Simples de Mic Ativo */
+  .btn-mic.active {
+    animation: pulseMic 1.5s infinite;
+  }
+
+  @keyframes pulseMic {
+    0% { filter: brightness(1); transform: scale(1); }
+    50% { filter: brightness(1.3); transform: scale(1.05); }
+    100% { filter: brightness(1); transform: scale(1); }
+  }
+</style>
 </head>
 <body>
 
@@ -74,36 +111,42 @@
     <img src="logo.png" alt="Duster Logo">
 </div>
 
-    <div class="hud-container">
-        <div class="stat-row">
-            <div class="stat-label">Fome</div>
-            <div class="bar-bg"><div id="fome-bar" class="bar-fill fome" style="width: 100%;"></div></div>
-        </div>
-        <div class="stat-row">
-            <div class="stat-label">Sede</div>
-            <div class="bar-bg"><div id="sede-bar" class="bar-fill sede" style="width: 100%;"></div></div>
-        </div>
-        <div class="stat-row">
-            <div class="stat-label">Sono</div>
-            <div class="bar-bg"><div id="sono-bar" class="bar-fill sono" style="width: 100%;"></div></div>
-        </div>
+<div class="hud-container">
+  <div class="hud">
+    <div class="hud-btn btn-armor" id="armor-box">
+      <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.25 3.75 10.15 9 11.35C17.25 21.15 21 16.25 21 11V5l-9-4z"/></svg>
     </div>
 
-    <script>
-        // Função chamada pelo servidor (PAWN) para atualizar as barras
-        // Valores devem ser de 0 a 100
-        function atualizarHud(fome, sede, sono) {
-            document.getElementById('fome-bar').style.width = fome + '%';
-            document.getElementById('sede-bar').style.width = sede + '%';
-            document.getElementById('sono-bar').style.width = sono + '%';
-        }
-    </script>
+    <div class="hud-btn btn-health" id="health-box">
+      <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+    </div>
+
+    <div class="hud-btn btn-hunger" id="hunger-box">
+      <svg viewBox="0 0 24 24"><path d="M18.06 22.99h1.66c.84 0 1.53-.64 1.63-1.46L23 5.05h-5V1h-1.97v4.05h-4.97l.3 2.34c1.71.47 3.31 1.32 4.27 2.26 1.44 1.42 2.43 2.89 2.43 5.29v8.05zM1 21.99V21h15.03v.99c0 .55-.45 1-1.01 1H2.01c-.56 0-1.01-.45-1.01-1zm15.03-7c0-8-15.03-8-15.03 0h15.03z"/></svg>
+    </div>
+
+    <div class="hud-btn btn-water" id="water-box">
+      <svg viewBox="0 0 24 24"><path d="M12 2c-5.33 4.55-8 8.48-8 11.8 0 4.98 3.8 8.2 8 8.2s8-3.22 8-8.2c0-3.32-2.67-7.25-8-11.8z"/></svg>
+    </div>
+
+    <div class="hud-btn btn-mic active" id="mic-box">
+      <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.42 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg>
+    </div>
+  </div>
+  <div class="version">Duster RP v0.1</div>
+</div>
+
+<script>
+  // Exemplo: Você pode alterar a opacidade do quadrado todo 
+  // para indicar que algo está acabando.
+  function setStatus(type, value) {
+    // value de 0 a 100
+    const el = document.getElementById(type + '-box');
+    if (el) {
+      el.style.opacity = (value / 100) + 0.2; // Garante um mínimo de 20% de visibilidade
+    }
+  }
+</script>
+
 </body>
-
 </html>
-
-
-
-
-
-
